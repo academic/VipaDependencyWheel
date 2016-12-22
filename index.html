@@ -37,9 +37,8 @@ form .btn-primary {
 </head>
 <body>
   <div class="container">
-    <h1>DependencyWheel: An Interactive Visualization Of Package Dependencies</h1>
+    <h1>DependencyWheel: An Interactive Visualization Of OJS Package Dependencies</h1>
 
-    <p class="lead">Modern development use package managers (composer, npm, bundler, etc.). Applications depend on a large number of packages, which depend themselves on other packages. The Dependency Wheel visualization attempts to reveal the entire dependency tree of any PHP library using Composer for dependency management. Each chord in the disc represents a dependency. Try hovering on packages to mask other dependencies. All rendering is done client-side, in JavaScript. Built with <a href="https://github.com/mbostock/d3">d3.js</a></p>
 
     <div id="chart_placeholder"></div>
 
@@ -50,27 +49,6 @@ form .btn-primary {
   <script src="js/d3.dependencyWheel.js"></script>
   <script src="js/composerBuilder.js"></script>
   <script>
-  var gitHubApiUrl = 'https://api.github.com/repos/';
-  var getData = function(target, callback) {
-    var responses = {
-      composerjson: null,
-      composerlock: null
-    };
-    var checkFinished = function() {
-      if (responses.composerjson && responses.composerlock) {
-        callback(responses.composerjson, responses.composerlock);
-      }
-    }
-    d3.xhr(gitHubApiUrl + target + '/contents/composer.json', 'application/vnd.github.VERSION.raw', function(err, composerjson) {
-      responses.composerjson = JSON.parse(composerjson.responseText);
-      checkFinished();
-    });
-    d3.xhr(gitHubApiUrl + target + '/contents/composer.lock', 'application/vnd.github.VERSION.raw', function(err, composerlock) {
-      responses.composerlock = JSON.parse(composerlock.responseText);
-      checkFinished();
-    });
-  };
-
   var chart = d3.chart.dependencyWheel();
 
   d3.json('data/composer.json', function(composerjson) {
@@ -82,29 +60,6 @@ form .btn-primary {
     });
   });
 
-  document.getElementById('composerRedraw').addEventListener('submit', function(e) {
-    e.preventDefault();
-    var composerjson = JSON.parse(document.getElementById('composerJson').value);
-    var composerlock = JSON.parse(document.getElementById('composerLock').value);
-    var data = buildMatrixFromComposerJsonAndLock(composerjson, composerlock);
-    d3.select('#chart_placeholder svg').remove();
-    d3.select('#chart_placeholder')
-      .datum(data)
-      .call(chart);
-  }, false);
-
-</script>
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-26354577-2']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
 
 </script>
 </body>
